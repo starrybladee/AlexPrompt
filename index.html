@@ -3,87 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rolls Game</title>
+    <title>ROLLS Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg-color: #121212;
-            --card-color: #1E1E1E;
-            --text-color: #FFFFFF;
-            --accent-color: #FFD700;
-            --button-color: #3A3A3A;
-        }
-        
         body {
-            font-family: 'Roboto', sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            background: #121212;
+            color: white;
             margin: 0;
             padding: 16px;
-            min-height: 100vh;
-        }
-        
-        .header {
             text-align: center;
-            margin-bottom: 24px;
-        }
-        
-        .title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent-color);
-            margin-bottom: 8px;
-        }
-        
-        .last-wins {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        
-        .last-wins-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        
-        .wins-list {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-        }
-        
-        .win-item {
-            background: rgba(255, 215, 0, 0.1);
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            border-radius: 8px;
-            padding: 8px 12px;
-            min-width: 60px;
-            text-align: center;
-            font-size: 16px;
         }
         
         .slot-machine {
-            background: var(--card-color);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
-            overflow: hidden;
+            margin: 20px auto;
+            width: 300px;
+            perspective: 1000px;
         }
         
-        .reel-container {
+        .reels {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin: 20px 0;
-            perspective: 1000px;
+            margin: 30px 0;
         }
         
         .reel {
@@ -91,13 +33,10 @@
             height: 120px;
             position: relative;
             transform-style: preserve-3d;
-            border-radius: 8px;
-            background: linear-gradient(145deg, #2a2a2a, #1f1f1f);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            animation: spin 0.1s infinite linear;
         }
         
-        .reel-item {
+        .reel-face {
             position: absolute;
             width: 100%;
             height: 100%;
@@ -106,46 +45,21 @@
             justify-content: center;
             font-size: 40px;
             backface-visibility: hidden;
-            transform-origin: center;
-        }
-        
-        .spin-btn {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            border: none;
-            width: 100%;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 600;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 0 rgba(255, 165, 0, 0.5);
-        }
-        
-        .spin-btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 rgba(255, 165, 0, 0.5);
-        }
-        
-        .wallet-section {
-            background: var(--card-color);
-            border-radius: 12px;
-            padding: 16px;
-            text-align: center;
-        }
-        
-        .connect-btn {
-            background: var(--button-color);
-            color: var(--text-color);
-            border: none;
-            padding: 12px 24px;
-            font-size: 16px;
+            background: #1e1e1e;
             border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        
+        button {
+            background: #FFD700;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 10px;
             cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            font-weight: bold;
+            margin: 10px;
         }
         
         @keyframes spin {
@@ -155,143 +69,80 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="title">ROLLS</div>
-    </div>
-    
-    <div class="last-wins">
-        <div class="last-wins-title">
-            <span>Последние выигрыши</span>
-        </div>
-        <div class="wins-list" id="winsList">
-            <!-- Динамически заполняем -->
-        </div>
-    </div>
+    <h1>🎰 ROLLS</h1>
     
     <div class="slot-machine">
-        <div class="reel-container" id="reelContainer">
-            <div class="reel" id="reel1"></div>
-            <div class="reel" id="reel2"></div>
-            <div class="reel" id="reel3"></div>
+        <div class="reels" id="reels">
+            <!-- Барабаны будут добавлены через JS -->
         </div>
-        
-        <button class="spin-btn" id="spinBtn">SPIN</button>
     </div>
     
-    <div class="wallet-section">
-        <button class="connect-btn" id="connectBtn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 8H19V16H5V8Z" fill="currentColor"/>
-                <path d="M8 12H16" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-            Подключи кошелек
-        </button>
-    </div>
+    <button id="spinBtn">SPIN</button>
+    <button id="connectBtn">Connect Wallet</button>
 
     <script>
-        // Символы для барабанов
-        const symbols = ["🍒", "🍋", "🍊", "🍇", "🍉", "💰", "💎", "7️⃣"];
+        const symbols = ["🍒", "🍋", "🍊", "🍇", "💰", "💎", "7️⃣"];
+        const reelCount = 3;
+        const spinDuration = 3000;
         
-        // Последние выигрыши (можно заменить на реальные данные)
-        const lastWins = ["💰", "💎", "🍇", "7️⃣", "🍒", "🍊", "💰", "🍋"];
+        // Создаем барабаны
+        function createReels() {
+            const reelsContainer = document.getElementById('reels');
+            
+            for (let i = 0; i < reelCount; i++) {
+                const reel = document.createElement('div');
+                reel.className = 'reel';
+                reel.id = reel${i+1};
+                
+                // Добавляем 10 символов в каждый барабан
+                for (let j = 0; j < 10; j++) {
+                    const face = document.createElement('div');
+                    face.className = 'reel-face';
+                    face.style.transform = rotateX(${j * 36}deg) translateZ(100px);
+                    face.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    reel.appendChild(face);
+                }
+                
+                reelsContainer.appendChild(reel);
+            }
+        }
+        
+        // Анимация вращения
+        function spin() {
+            const spinBtn = document.getElementById('spinBtn');
+            spinBtn.disabled = true;
+            
+            // Останавливаем все барабаны на случайных символах
+            for (let i = 1; i <= reelCount; i++) {
+                const reel = document.getElementById(`reel${i}`);
+                const randomStop = Math.floor(Math.random() * 10) * 36;
+                const spins = 5; // Количество полных оборотов
+                
+                reel.style.transition = transform ${spinDuration}ms cubic-bezier(0.1, 0.7, 0.1, 1);
+                reel.style.transform = rotateX(${spins * 360 + randomStop}deg);
+            }
+            
+            // Включаем кнопку после завершения анимации
+            setTimeout(() => {
+                spinBtn.disabled = false;
+                
+                // Отправляем результат в Telegram бота
+if (window.Telegram && Telegram.WebApp.sendData) {
+                    const winSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+                    Telegram.WebApp.sendData(JSON.stringify({
+                        prize: winSymbol,
+                        action: "spin"
+                    }));
+                }
+            }, spinDuration + 300);
+        }
         
         // Инициализация
         document.addEventListener('DOMContentLoaded', () => {
-            const winsList = document.getElementById('winsList');
-            const reel1 = document.getElementById('reel1');
-            const reel2 = document.getElementById('reel2');
-            const reel3 = document.getElementById('reel3');
-            const spinBtn = document.getElementById('spinBtn');
-            const connectBtn = document.getElementById('connectBtn');
+            createReels();
             
-            // Заполняем последние выигрыши
-            lastWins.forEach(win => {
-                const winItem = document.createElement('div');
-                winItem.className = 'win-item';
-                winItem.textContent = win;
-                winsList.appendChild(winItem);
-            });
+            document.getElementById('spinBtn').addEventListener('click', spin);
             
-            // Создаем элементы барабанов
-            function createReelItems(reel) {
-                for (let i = 0; i < 10; i++) {
-                    const item = document.createElement('div');
-                    item.className = 'reel-item';
-                    item.style.transform = rotateX(${i * 36}deg) translateZ(100px);
-                    item.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                    reel.appendChild(item);
-                }
-            }
-            
-            createReelItems(reel1);
-            createReelItems(reel2);
-            createReelItems(reel3);
-            
-            // Анимация вращения
-            spinBtn.addEventListener('click', () => {
-                if (spinBtn.disabled) return;
-                spinBtn.disabled = true;
-                
-                // Параметры анимации
-                const spins = 5; // Количество полных оборотов
-                const duration = 3000; // Длительность в ms
-                
-                // Запускаем анимацию для каждого барабана
-                [reel1, reel2, reel3].forEach((reel, index) => {
-                    // Случайная остановка на символе
-                    const targetSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-                    const items = reel.querySelectorAll('.reel-item');
-                    
-                    // Находим позицию целевого символа
-                    let targetPosition = 0;
-                    items.forEach((item, i) => {
-                        if (item.textContent === targetSymbol) {
-                            targetPosition = i;
-                        }
-                    });
-                    // Задержка для последовательного запуска барабанов
-                    setTimeout(() => {
-                        reel.style.transition = transform ${duration}ms cubic-bezier(0.2, 0.7, 0.1, 1);
-                        reel.style.transform = rotateX(${spins * 360 + targetPosition * 36}deg);
-                    }, index * 200);
-                });
-                
-                // Включаем кнопку после завершения анимации
-                setTimeout(() => {
-                    spinBtn.disabled = false;
-                    
-                    // Отправляем результат в бота
-                    if (window.Telegram && Telegram.WebApp.sendData) {
-                        const winSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-                        Telegram.WebApp.sendData(JSON.stringify({
-                            prize: winSymbol,
-                            action: "spin"
-                        }));
-                        
-                        // Добавляем выигрыш в список
-                        const winItem = document.createElement('div');
-                        winItem.className = 'win-item';
-                        winItem.textContent = winSymbol;
-                        winsList.insertBefore(winItem, winsList.firstChild);
-                        
-                        // Удаляем лишние элементы
-                        if (winsList.children.length > 10) {
-                            winsList.removeChild(winsList.lastChild);
-                        }
-                    }
-                }, duration + 600);
-            });
-            
-            // Кнопка подключения кошелька
-            connectBtn.addEventListener('click', () => {
-                if (window.Telegram && Telegram.WebApp.sendData) {
-                    Telegram.WebApp.sendData(JSON.stringify({
-                        action: "connect_wallet"
-                    }));
-                }
-            });
-            
-            // Инициализация Telegram WebApp
             if (window.Telegram) {
                 Telegram.WebApp.ready();
                 Telegram.WebApp.expand();
