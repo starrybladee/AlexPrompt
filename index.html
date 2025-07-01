@@ -10,15 +10,8 @@
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            background: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
         }
         .drum {
             font-size: 60px;
@@ -26,21 +19,13 @@
             height: 80px;
         }
         button {
-            background: #0088cc;
-            color: white;
+            background: var(--tg-theme-button-color);
+            color: var(--tg-theme-button-text-color);
             border: none;
-            padding: 12px 24px;
+            padding: 15px 30px;
             font-size: 18px;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background 0.3s;
-        }
-        button:hover {
-            background: #006699;
-        }
-        button:disabled {
-            background: #cccccc;
-            cursor: not-allowed;
         }
     </style>
 </head>
@@ -52,42 +37,33 @@
     </div>
 
     <script>
-        const prizes = ["🍎", "🍒", "🍋", "🍊", "🍇", "🍉", "🎰", "💰", "💎", "🎁", "🍀", "⭐"];
+        const prizes = ["🍎", "🍒", "🍋", "🍊", "💰", "💎", "🎁", "⭐"];
         const drum = document.getElementById('drum');
         const spinBtn = document.getElementById('spinBtn');
-        let isSpinning = false;
 
-        function spin() {
-            if (isSpinning) return;
-            isSpinning = true;
+        spinBtn.addEventListener('click', () => {
             spinBtn.disabled = true;
-            
             let spins = 0;
-            const totalSpins = 15;
             
+            // Анимация вращения
             const spinInterval = setInterval(() => {
                 spins++;
-                const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
-                drum.textContent = randomPrize;
+                drum.textContent = prizes[Math.floor(Math.random() * prizes.length)];
                 
-                if (spins >= totalSpins) {
+                if (spins >= 10) {
                     clearInterval(spinInterval);
-                    isSpinning = false;
-                    spinBtn.disabled = false;
-                    
                     const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
                     drum.textContent = finalPrize;
+                    spinBtn.disabled = false;
                     
-                    // Отправляем результат в Telegram бота
-                    if (window.Telegram && Telegram.WebApp.sendData) {
+                    // Отправка результата в бота
+                    if (window.Telegram) {
                         Telegram.WebApp.sendData(finalPrize);
                     }
                 }
             }, 100);
-        }
+        });
 
-        spinBtn.addEventListener('click', spin);
-        
         // Инициализация WebApp
         Telegram.WebApp.ready();
     </script>
