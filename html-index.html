@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Барабан призов</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .drum {
+            font-size: 60px;
+            margin: 30px 0;
+            height: 80px;
+        }
+        button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #006699;
+        }
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎰 Барабан призов</h1>
+        <div class="drum" id="drum">?</div>
+        <button id="spinBtn">SPIN</button>
+    </div>
+
+    <script>
+        const prizes = ["🍎", "🍒", "🍋", "🍊", "🍇", "🍉", "🎰", "💰", "💎", "🎁", "🍀", "⭐"];
+        const drum = document.getElementById('drum');
+        const spinBtn = document.getElementById('spinBtn');
+        let isSpinning = false;
+
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
+            spinBtn.disabled = true;
+            
+            let spins = 0;
+            const totalSpins = 15;
+            
+            const spinInterval = setInterval(() => {
+                spins++;
+                const randomPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                drum.textContent = randomPrize;
+                
+                if (spins >= totalSpins) {
+                    clearInterval(spinInterval);
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    
+                    const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                    drum.textContent = finalPrize;
+                    
+                    // Отправляем результат в Telegram бота
+                    if (window.Telegram && Telegram.WebApp.sendData) {
+                        Telegram.WebApp.sendData(finalPrize);
+                    }
+                }
+            }, 100);
+        }
+
+        spinBtn.addEventListener('click', spin);
+        
+        // Инициализация WebApp
+        Telegram.WebApp.ready();
+    </script>
+</body>
+</html>
