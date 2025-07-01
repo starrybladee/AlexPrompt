@@ -30,11 +30,9 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎰 Барабан призов</h1>
-        <div class="drum" id="drum">?</div>
-        <button id="spinBtn">SPIN</button>
-    </div>
+    <h1>🎰 Барабан призов</h1>
+    <div class="drum" id="drum">?</div>
+    <button id="spinBtn">SPIN</button>
 
     <script>
         const prizes = ["🍎", "🍒", "🍋", "🍊", "💰", "💎", "🎁", "⭐"];
@@ -57,7 +55,7 @@
                     spinBtn.disabled = false;
                     
                     // Отправка результата в бота
-                    if (window.Telegram) {
+                    if (window.Telegram && Telegram.WebApp.sendData) {
                         Telegram.WebApp.sendData(finalPrize);
                     }
                 }
@@ -66,6 +64,7 @@
 
         // Инициализация WebApp
         Telegram.WebApp.ready();
+        Telegram.WebApp.expand(); // Раскрыть на весь экран
     </script>
 </body>
 </html>
