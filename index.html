@@ -127,7 +127,7 @@
                 spinBtn.disabled = false;
                 
                 // Отправляем результат в Telegram бота
-if (window.Telegram && Telegram.WebApp.sendData) {
+                if (window.Telegram && Telegram.WebApp.sendData) {
                     const winSymbol = symbols[Math.floor(Math.random() * symbols.length)];
                     Telegram.WebApp.sendData(JSON.stringify({
                         prize: winSymbol,
