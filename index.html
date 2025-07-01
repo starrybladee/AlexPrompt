@@ -3,248 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎰 Lucky Spin</title>
+    <title>Spin Game</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: Arial, sans-serif;
             text-align: center;
             background: #1e1e1e;
             color: white;
-            padding: 0;
+            padding: 20px;
             margin: 0;
             height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            overflow: hidden;
         }
-        
-        .container {
-            padding: 20px;
-        }
-        
-        h1 {
-            color: #ffeb3b;
-            margin-bottom: 30px;
-            text-shadow: 0 0 10px rgba(255, 235, 59, 0.5);
-        }
-        
-        .slot-machine {
-            position: relative;
-            width: 300px;
-            height: 150px;
-            margin: 0 auto 30px;
-            perspective: 1000px;
-        }
-        
-        .reel {
-            position: absolute;
-            width: 80px;
-            height: 80px;
-            top: 35px;
+        #drum {
             font-size: 60px;
-            line-height: 80px;
-            background: #2c2c2c;
-            border-radius: 10px;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5),
-                        0 5px 0 #1a1a1a;
-            overflow: hidden;
+            margin: 30px 0;
+            height: 80px;
         }
-        
-        .reel:nth-child(1) { left: 10px; }
-        .reel:nth-child(2) { left: 110px; }
-        .reel:nth-child(3) { left: 210px; }
-        
-        .reel-content {
-            position: absolute;
-            width: 100%;
-            text-align: center;
-            transition: transform 0.1s;
-        }
-        
-        .spin-btn {
-            background: linear-gradient(135deg, #ff5722, #ff9800);
+        #spinBtn {
+            background: #0088cc;
             color: white;
             border: none;
-            padding: 15px 40px;
+            padding: 15px 30px;
             font-size: 18px;
-            border-radius: 50px;
+            border-radius: 10px;
             cursor: pointer;
-            box-shadow: 0 5px 0 #c66900;
-            transition: all 0.2s;
-            outline: none;
-            margin-top: 20px;
         }
-        
-        .spin-btn:active {
-            transform: translateY(3px);
-            box-shadow: 0 2px 0 #c66900;
-        }
-        
-        .spin-btn:disabled {
-            background: #9e9e9e;
-            box-shadow: 0 5px 0 #616161;
+        #spinBtn:disabled {
+            background: #555;
             cursor: not-allowed;
-        }
-        
-        .win-animation {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, transparent 10%, rgba(255,215,0,0.3) 10%);
-            background-size: 10px 10px;
-            animation: glitter 1s linear infinite;
-            opacity: 0;
-            pointer-events: none;
-        }
-        
-        @keyframes spin {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-1000px); }
-        }
-        
-        @keyframes glitter {
-            0% { background-position: 0 0; }
-            100% { background-position: -20px 20px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>LUCKY SPIN</h1>
-        
-        <div class="slot-machine">
-            <div class="reel" id="reel1">
-                <div class="reel-content">🍎</div>
-            </div>
-            <div class="reel" id="reel2">
-                <div class="reel-content">🍋</div>
-            </div>
-            <div class="reel" id="reel3">
-                <div class="reel-content">🍒</div>
-            </div>
-            <div class="win-animation" id="winAnimation"></div>
-        </div>
-        
-        <button class="spin-btn" id="spinBtn">SPIN</button>
-    </div>
+    <div id="drum">🎰</div>
+    <button id="spinBtn">SPIN</button>
 
     <script>
-        const prizes = ["🍎", "🍒", "🍋", "🍊", "🍇", "🍉", "💰", "💎", "🎁", "⭐", "🍀", "7️⃣"];
-        const reel1 = document.getElementById('reel1');
-        const reel2 = document.getElementById('reel2');
-        const reel3 = document.getElementById('reel3');
+        // Призы
+        const prizes = ["🍎", "🍒", "🍋", "🍊", "💰", "💎", "🎁", "⭐"];
+        const drum = document.getElementById('drum');
         const spinBtn = document.getElementById('spinBtn');
-        const winAnimation = document.getElementById('winAnimation');
-        
-        // Создаем контент для барабанов
-        function createReelContent(reel, count = 20) {
-            const content = reel.querySelector('.reel-content');
-            content.innerHTML = '';
-            
-            for (let i = 0; i < count; i++) {
-                const prize = document.createElement('div');
-                prize.textContent = prizes[Math.floor(Math.random() * prizes.length)];
-                prize.style.height = '80px';
-                prize.style.display = 'flex';
-                prize.style.alignItems = 'center';
-                prize.style.justifyContent = 'center';
-                content.appendChild(prize);
-            }
-        }
-        
-        // Инициализация барабанов
-        createReelContent(reel1);
-        createReelContent(reel2);
-        createReelContent(reel3);
-        
-        // Анимация вращения
-        function spinReel(reel, duration, delay) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    const content = reel.querySelector('.reel-content');
-                    const randomOffset = Math.floor(Math.random() * 5) * 80;
-                    const targetPosition = -(content.children.length * 80) + randomOffset;
-                    
-                    content.style.transition = transform ${duration}ms cubic-bezier(0.1, 0.7, 0.1, 1);
-                    content.style.transform = translateY(${targetPosition}px);
-                    
-                    setTimeout(() => {
-                        resolve();
-                    }, duration);
-                }, delay);
-            });
-        }
-        
-        // Проверка выигрыша
-        function checkWin() {
-            const reels = [reel1, reel2, reel3];
-            const symbols = [];
-            
-            reels.forEach(reel => {
-                const content = reel.querySelector('.reel-content');
-                const computedStyle = window.getComputedStyle(content);
-                const matrix = new WebKitCSSMatrix(computedStyle.transform);
-                const currentPosition = Math.abs(Math.round(matrix.m42 / 80) * 80);
-                
-                const symbolIndex = (currentPosition / 80) % prizes.length;
-                symbols.push(content.children[symbolIndex].textContent);
-            });
-            
-            if (symbols[0] === symbols[1] && symbols[1] === symbols[2]) {
-                // Джекпот!
-                winAnimation.style.opacity = '1';
-                setTimeout(() => {
-                    winAnimation.style.opacity = '0';
-                }, 2000);
-                
-                return { win: true, prize: symbols[0] };
-            }
-            
-            return { win: false, prize: null };
-        }
-        
-        // Обработчик кнопки SPIN
-        spinBtn.addEventListener('click', async () => {
+        let isSpinning = false;
+
+        // Функция вращения
+        function spin() {
+            if (isSpinning) return;
+            isSpinning = true;
             spinBtn.disabled = true;
             
-            // Запускаем вращение всех барабанов
-            await Promise.all([
-                spinReel(reel1, 3000, 0),
-                spinReel(reel2, 3500, 200),
-                spinReel(reel3, 4000, 400)
-            ]);
-            
-            // Проверяем результат
-            const result = checkWin();
-            
-            if (result.win) {
-                if (window.Telegram && Telegram.WebApp.sendData) {
-                    Telegram.WebApp.sendData(JSON.stringify({
-                        prize: result.prize,
-                        win: true
-                    }));
+            let spins = 0;
+            const spinInterval = setInterval(() => {
+                spins++;
+                drum.textContent = prizes[Math.floor(Math.random() * prizes.length)];
+                
+                // Остановка через 10 циклов
+                if (spins >= 10) {
+                    clearInterval(spinInterval);
+                    isSpinning = false;
+                    spinBtn.disabled = false;
+                    
+                    // Финальный приз
+                    const finalPrize = prizes[Math.floor(Math.random() * prizes.length)];
+                    drum.textContent = finalPrize;
+                    
+                    // Отправка результата в бота
+                    if (window.Telegram && Telegram.WebApp.sendData) {
+                        Telegram.WebApp.sendData(finalPrize);
+                    }
                 }
-            } else {
-                if (window.Telegram && Telegram.WebApp.sendData) {
-                    Telegram.WebApp.sendData(JSON.stringify({
-                        prize: null,
-                        win: false
-                    }));
-                }
-            }
-            
-            // Пересоздаем контент для следующего вращения
-            createReelContent(reel1);
-            createReelContent(reel2);
-            createReelContent(reel3);
-            
-            spinBtn.disabled = false;
-        });
-        // Инициализация Telegram Web App
+            }, 100);
+        }
+
+        // Назначение обработчика
+        spinBtn.addEventListener('click', spin);
+
+        // Инициализация Telegram WebApp
         if (window.Telegram) {
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
